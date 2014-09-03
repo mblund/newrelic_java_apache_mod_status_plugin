@@ -1,8 +1,10 @@
 # New Relic Platform Apache httpd mod_status Plugin - Java
 
-Find the New Relic Wikipedia Example plugin in the [New Relic storefront](http://newrelic.com/plugins/new-relic-inc/8)
 
-Find the New Relic Wikipedia plugin in [Plugin Central](https://rpm.newrelic.com/extensions/com.newrelic.examples.wikipedia)
+
+~~Find the New Relic Wikipedia Example plugin in the [New Relic storefront](http://newrelic.com/plugins/new-relic-inc/8)~
+
+~Find the New Relic Wikipedia plugin in [Plugin Central](https://rpm.newrelic.com/extensions/com.newrelic.examples.wikipedia)~
 
 ----
 
@@ -19,10 +21,9 @@ Find the New Relic Wikipedia plugin in [Plugin Central](https://rpm.newrelic.com
 
 This plugin can be installed one of the following ways:
 
-* [Option 1 - New Relic Platform Installer](#option-1--install-with-the-new-relic-platform-installer)
-* [Option 2 - Chef and Puppet Install Scripts](#option-2--install-via-chef-or-puppet)
+* ~~[Option 1 - New Relic Platform Installer](#option-1--install-with-the-new-relic-platform-installer)~~
+* ~~[Option 2 - Chef and Puppet Install Scripts](#option-2--install-via-chef-or-puppet)~~
 * [Option 3 - Manual Install](#option-3--install-manually)
-
 
 ### Install Manually (Non-standard)
 
