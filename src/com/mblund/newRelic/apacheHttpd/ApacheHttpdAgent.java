@@ -24,8 +24,8 @@ public class ApacheHttpdAgent extends Agent {
 
     private static final Logger logger = Logger.getLogger(ApacheHttpdAgent.class);
 
-    private static final String GUID = "com.mblund.apacheModStatus";
-    private static final String VERSION = "0.0.2";
+    private static final String GUID = "com.mblund.mod_status";
+    private static final String VERSION = "0.3.0";
 
     private static final String HTTP = "http";
     private static final String STATUS_URL = "/server-status?auto";
