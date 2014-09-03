@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project name="mod_status" default="dist" basedir=".">
 
-    <property name="version" value="2.0.2" />
+    <property name="version" value="0.1.0" />
     <property name="filename" value="mblund_mod_status_plugin-${version}"/>
     <property name="jarfile" value="plugin.jar" />
     <property name="tarfile" value="${filename}.tar.gz" />
@@ -65,7 +65,9 @@
     <target name="dist" depends="jar" description="create a downloadable file">
         <mkdir dir="${build.tar.src.dir}" />
         <copy todir="${build.tar.src.dir}/config">
-            <fileset dir="${conf.dir}" />
+            <fileset dir="${conf.dir}" >
+                <exclude name="newrelic.json"/>
+            </fileset>
         </copy>
         <copy file="${build.jar.dir}/${jarfile}" todir="${build.tar.src.dir}" />
         <tar compression="gzip" destfile="${dist.dir}/${tarfile}">
