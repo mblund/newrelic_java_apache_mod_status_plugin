@@ -2,9 +2,9 @@
 
 
 
-~~Find the New Relic Wikipedia Example plugin in the [New Relic storefront](http://newrelic.com/plugins/new-relic-inc/8)~
+~~Find the New Relic Wikipedia Example plugin in the [New Relic storefront](http://newrelic.com/plugins/new-relic-inc/8)~~
 
-~Find the New Relic Wikipedia plugin in [Plugin Central](https://rpm.newrelic.com/extensions/com.newrelic.examples.wikipedia)~
+~~Find the New Relic Wikipedia plugin in [Plugin Central](https://rpm.newrelic.com/extensions/com.newrelic.examples.wikipedia)~~
 
 ----
 
