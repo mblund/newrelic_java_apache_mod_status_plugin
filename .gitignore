@@ -5,3 +5,6 @@ META-INF/
 bin/
 config/newrelic.json
 logs/
+*.iml
+*.ipr
+*.iws
