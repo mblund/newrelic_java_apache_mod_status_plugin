@@ -1,23 +1,9 @@
 {
   "agents": [
-    {
-      "name" : "Apache offical",
-      "host" : "apache.org",
-      "metrics" : [
-          {"name":"Total Accesses", "unit":"#" },
-          {"name":"Total kBytes", "unit":"#" },
-          {"name":"CPULoad", "unit":"#" },
-          {"name":"Uptime", "unit":"#" },
-          {"name":"ReqPerSec", "unit":"#" },
-          {"name":"BytesPerSec", "unit":"#" },
-          {"name":"BytesPerReq", "unit":"#" },
-          {"name":"BusyWorkers", "unit":"#" },
-          {"name":"IdleWorkers", "unit":"#" },
-          {"name":"ConnsTotal", "unit":"#" },
-          {"name":"ConnsAsyncWriting", "unit":"#" },
-          {"name":"ConnsAsyncKeepAlive", "unit":"#" },
-          {"name":"ConnsAsyncClosing", "unit":"#" }
-      ]
-    }
+      {
+          "name": "Apache offical",
+          "host": "apache.org"
+      }
+
   ]
 }

@@ -11,7 +11,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,25 +28,25 @@ public class ApacheHttpdAgent extends Agent {
 
     private static final String HTTP = "http";
     private static final String STATUS_URL = "/server-status?auto";
-    private final Map<String, String> metrics;
+
 
     private String name;
     private URL url;
 
+    private DeltaProcessor deltaTotalAccessProcessor = new DeltaProcessor();
+    private DeltaProcessor deltaTotalBytesProcessor = new DeltaProcessor();
     /**
      * Constructor for Apache httpd  Agent.
      * Uses name for Component Human Label and host for building Apache httpd mod_status service.
      * @param name
      * @param host
-     * @param metrics
      * @throws ConfigurationException if URL for Apache httpd's mod_status service could not be built correctly from provided host
      */
-    public ApacheHttpdAgent(String name, String host, Map<String, String> metrics) throws ConfigurationException {
+    public ApacheHttpdAgent(String name, String host) throws ConfigurationException {
         super(GUID, VERSION);
         try {
             this.name = name;
             this.url = new URL(HTTP, host, STATUS_URL);
-            this.metrics = metrics;
 
             logger.info("started");
         } catch (MalformedURLException e) {
@@ -104,28 +103,38 @@ public class ApacheHttpdAgent extends Agent {
     }
 
     private void processLine( String line) {
+        logger.debug("line:"+line);
         Matcher matcher = regex.matcher(line);
         if (matcher.find() ){
             String key = matcher.group(1).trim();
             String value = matcher.group(2).trim();
-            report(key, value);
+            report(key,value);
         } else {
            logger.debug("Couldn't parse: " + line);
         }
     }
 
     private void report(String key, String value) {
-        if (metrics.containsKey(key) ){
-            try {
-                reportMetric(key, metrics.get(key) , Float.parseFloat(value));
-            } catch(NumberFormatException e){
-                logger.warn("Not a valid float number:'" + value + "' for metric:" + key + ". Error=" + e);
-            } catch (NullPointerException e){
-                logger.warn("Couldn't get a value for metric" + key + ".");
+        try {
+            if ("Total Accesses".equals(key)) {
+                logger.debug(key+":"+value);
+                Long delta = deltaTotalAccessProcessor.process(Long.parseLong(value));
+                if (delta != null) {
+                    reportMetric("Accesses", "#", delta);
+                }
             }
-        } else {
-            logger.debug("Ignore metric:'"+key+"' with value:"+value+"'");
+            else if("Total kBytes".equals(key)){
+                Long delta = deltaTotalBytesProcessor.process(Long.parseLong(value));
+                if (delta != null) {
+                    reportMetric("kBytes", "#", delta);
+                }
+            }
+        } catch(NumberFormatException e){
+            logger.warn("Not a valid float number:'" + value + "' for metric:" + key + ". Error=" + e);
+        } catch (NullPointerException e){
+            logger.warn("Couldn't get a value for metric" + key + ".");
         }
+
     }
 
     private static String example =
