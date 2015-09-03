@@ -2,7 +2,8 @@
   "agents": [
       {
           "name": "Apache offical",
-          "host": "apache.org"
+          "host": "apache.org",
+          "port": "80"
       }
 
   ]

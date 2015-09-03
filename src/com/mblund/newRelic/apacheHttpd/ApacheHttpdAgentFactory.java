@@ -18,12 +18,13 @@ public class ApacheHttpdAgentFactory extends AgentFactory {
         try {
             String name = (String) properties.get("name");
             String host = (String) properties.get("host");
+            int port = Integer.parseInt((String) properties.get("port"));
 
             if (name == null || host == null ) {
                 throw new ConfigurationException("'name' or 'host' cannot be null. Do you have a 'config/plugin.json' file?");
             }
 
-            return new ApacheHttpdAgent(name, host);
+            return new ApacheHttpdAgent(name, host,port);
         } catch (ClassCastException e) {
             throw new ConfigurationException(e);
         }

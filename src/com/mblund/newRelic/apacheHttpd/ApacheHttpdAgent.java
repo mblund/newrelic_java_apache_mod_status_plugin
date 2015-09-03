@@ -42,11 +42,11 @@ public class ApacheHttpdAgent extends Agent {
      * @param host
      * @throws ConfigurationException if URL for Apache httpd's mod_status service could not be built correctly from provided host
      */
-    public ApacheHttpdAgent(String name, String host) throws ConfigurationException {
+    public ApacheHttpdAgent(String name, String host, int port) throws ConfigurationException {
         super(GUID, VERSION);
         try {
             this.name = name;
-            this.url = new URL(HTTP, host, STATUS_URL);
+            this.url = new URL(HTTP, host, port, STATUS_URL);
 
             logger.info("started");
         } catch (MalformedURLException e) {
