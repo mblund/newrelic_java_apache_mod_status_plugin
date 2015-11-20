@@ -8,11 +8,16 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.Integer;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static java.lang.Long.parseLong;
 
 /**
  * An agent for Apache Httpd mod_status Agent.
@@ -47,11 +52,11 @@ public class ApacheHttpdAgent extends Agent {
         try {
             this.name = name;
             this.url = new URL(HTTP, host, STATUS_URL);
-
-            logger.info("started");
+            logger.info("Started " + this);
         } catch (MalformedURLException e) {
             throw new ConfigurationException("Apache httpd metric URL could not be parsed", e);
         }
+
     }
 
     @Override
@@ -66,7 +71,8 @@ public class ApacheHttpdAgent extends Agent {
         try {
             connection = (HttpURLConnection) url.openConnection();
             inputStream = connection.getInputStream();
-            processLines(inputStream);
+            List<String> lines = getLines(inputStream);
+
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -81,14 +87,16 @@ public class ApacheHttpdAgent extends Agent {
         }
     }
 
-    private  void processLines(InputStream is) {
+    private List<String> getLines(InputStream is) {
+        List<String> result = new ArrayList<String>();
         BufferedReader br = null;
         try {
             br = new BufferedReader(new InputStreamReader(is));
             String line;
             while ((line = br.readLine()) != null) {
-                processLine(line);
+                result.add(line);
             }
+            return result;
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -100,41 +108,56 @@ public class ApacheHttpdAgent extends Agent {
                 }
             }
         }
+        return result;
     }
 
-    private void processLine( String line) {
-        logger.debug("line:"+line);
+    class Metric {
+        final public  String key;
+        final public String value;
+        public Metric(String key, String value){
+            this.key = key;
+            this.value = value;
+        }
+    }
+
+    private Metric processLong(String line){
         Matcher matcher = regex.matcher(line);
         if (matcher.find() ){
             String key = matcher.group(1).trim();
             String value = matcher.group(2).trim();
-            report(key,value);
-        } else {
-           logger.debug("Couldn't parse: " + line);
-        }
+            return new Metric(key, value);
+        } 
     }
 
     private void report(String key, String value) {
         try {
             if ("Total Accesses".equals(key)) {
                 logger.debug(key+":"+value);
-                Long delta = deltaTotalAccessProcessor.process(Long.parseLong(value));
+                Long delta = deltaTotalAccessProcessor.process(parseLong(value));
                 if (delta != null) {
                     reportMetric("Accesses", "#", delta);
                 }
             }
             else if("Total kBytes".equals(key)){
-                Long delta = deltaTotalBytesProcessor.process(Long.parseLong(value));
+                Long delta = deltaTotalBytesProcessor.process(parseLong(value));
                 if (delta != null) {
                     reportMetric("kBytes", "#", delta);
                 }
             }
+            else if("BusyWorkers".equals(key)) {
+                reportMetric("BusyWorkers", "#", parseLong(value));
+            } else if ("IdleWorkers".equals(key)) {
+                reportMetric("IdleWorkers", "#", parseLong(value));
+            }
+            else if("ReqPerSec".equals(key)) {
+                reportMetric("ReqPerSec", "#", Float.parseFloat(value));
+            }
+
         } catch(NumberFormatException e){
-            logger.warn("Not a valid float number:'" + value + "' for metric:" + key + ". Error=" + e);
+            logger.warn("Not a valid number:'" + value + "' for metric:" + key + ". Error=" + e);
         } catch (NullPointerException e){
             logger.warn("Couldn't get a value for metric" + key + ".");
         }
-
     }
 
     private static String example =
@@ -151,4 +174,11 @@ public class ApacheHttpdAgent extends Agent {
 
     static Pattern regex = Pattern.compile("(.*):(.*)");
 
+    @Override
+    public String toString() {
+        return "ApacheHttpdAgent{" +
+                "url=" + url +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }
